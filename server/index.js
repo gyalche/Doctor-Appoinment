@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import colors from 'colors';
 import { mongoDb } from './database/Db.js';
+import userRoute from './routes/userRoutes.js';
+
 const app = express();
 dotenv.config();
 
@@ -17,6 +19,8 @@ app.use(helmet());
 
 //Databse connection;
 mongoDb();
+
+app.use('/api/v1/user', userRoute);
 const PORT = process.env.PORT || 500;
 app.listen(PORT, () => {
   console.log(`server is running on localhost://${PORT}`.bgCyan.white);
