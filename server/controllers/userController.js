@@ -1,8 +1,9 @@
 import User from '../models/userModels.js';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export const register = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { name, email, password } = req.body;
 
   try {
     //find user if exist;
@@ -13,9 +14,9 @@ export const register = async (req, res) => {
         .send({ msg: 'User already exists', success: false });
     }
     const salt = await bcrypt.genSalt(10);
-    const hashPassword = bcrypt.hash(password, salt);
+    const hashPassword = await bcrypt.hash(password, salt);
     const user = new User({
-      username,
+      name,
       email,
       password: hashPassword,
     });
@@ -28,7 +29,7 @@ export const register = async (req, res) => {
           .send({ msg: 'Sucessfully registerd', success: true, data: data });
       })
       .catch((err) => {
-        res.status(404).send({ msg: 'unable to regisrer' });
+        res.status(404).send({ msg: 'unable to register' });
       });
   } catch (error) {
     res
@@ -50,9 +51,30 @@ export const login = async (req, res) => {
     const comparePassword = await bcrypt.compare(password, user.password);
     if (!comparePassword) {
       res.status(500).send({ msg: 'Password doesnt match', success: false });
+    } else {
+      const token = jwt.sign({ userId: user._id }, 'dawadon', {
+        expiresIn: '1d',
+      });
+      res.status(201).send({ msg: 'Login Sucessfull', success: true, token });
     }
-    res.status(201).send({ msg: 'Login Sucessfull', success: true });
   } catch (error) {
     res.status(500).send({ error: error.message });
+  }
+};
+
+//getUserData
+export const getUserData = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.user.userId });
+    if (!user) {
+      return res.status(200).send({ msg: 'User not Found', success: false });
+    } else {
+      res.status(200).send({
+        success: true,
+        data: { name: user.name, email: user.email, password: user.password },
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ msg: 'unable to get user', success: false });
   }
 };

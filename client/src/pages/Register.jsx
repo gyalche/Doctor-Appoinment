@@ -2,8 +2,27 @@ import React from 'react';
 import { Form, Input } from 'antd';
 import '../styles/RegisterStyles.css';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from '../axios';
+import { useDispatch } from 'react-redux';
+import { showLoading, hideLoading } from '../redux/features/alertSlice';
+
 const Register = () => {
-  const onfinishHandler = (values) => {};
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const onfinishHandler = async (values) => {
+    try {
+      dispatch(showLoading());
+      const res = await axios.post('/user/register', values);
+      dispatch(hideLoading());
+      if (res.data) {
+        navigate('/login');
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(hideLoading());
+    }
+  };
   return (
     <>
       <div className="form-container">

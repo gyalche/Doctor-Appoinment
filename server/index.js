@@ -21,7 +21,7 @@ app.use(helmet());
 mongoDb();
 
 app.use('/api/v1/user', userRoute);
-const PORT = process.env.PORT || 500;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`server is running on localhost://${PORT}`.bgCyan.white);
 });
