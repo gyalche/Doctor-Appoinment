@@ -65,13 +65,14 @@ export const login = async (req, res) => {
 //getUserData
 export const getUserData = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.user.userId });
+    const user = await User.findById({ _id: req.user.userId });
+    user.password = undefined;
     if (!user) {
       return res.status(200).send({ msg: 'User not Found', success: false });
     } else {
       res.status(200).send({
         success: true,
-        data: { name: user.name, email: user.email, password: user.password },
+        data: user,
       });
     }
   } catch (error) {
