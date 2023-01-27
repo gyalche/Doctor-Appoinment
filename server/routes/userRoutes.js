@@ -1,6 +1,8 @@
 import express from 'express';
 import {
   applyDoctor,
+  applyDoctorController,
+  deleteAllNotifications,
   getUserData,
   login,
   register,
@@ -19,5 +21,14 @@ router.get('/getUserData', userAuthentication, getUserData);
 
 // apply doctor
 router.post('/applydoctor', userAuthentication, applyDoctor);
+
+//notification post;
+router.post('/get-all-notification', userAuthentication, applyDoctorController);
+
+router.post(
+  '/delete-all-notification',
+  userAuthentication,
+  deleteAllNotifications
+);
 
 export default router;

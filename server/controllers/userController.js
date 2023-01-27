@@ -104,3 +104,44 @@ export const applyDoctor = async (req, res) => {
     res.status(400).send({ msg: 'unable to apply', success: false });
   }
 };
+
+//get notification;
+export const applyDoctorController = async (req, res) => {
+  try {
+    const user = await User.find({ _id: req.body.userId });
+    const seennotification = user.seennotification;
+    const notification = user.notification;
+    seennotification.push(...notification);
+    user.notification = [];
+    user.seennotification = notification;
+    const updateUser = await user.save();
+
+    res.status(200).send({
+      success: true,
+      message: 'all notification read',
+      data: updateUser,
+    });
+  } catch (error) {
+    res.status(500).send({ msg: 'error in notification', success: false });
+  }
+};
+
+//delte notification;
+export const deleteAllNotifications = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.body.userId });
+    user.notification = [];
+    user.seennotification = [];
+
+    const updateUser = await user.save();
+    updateUser.password = undefined;
+    res
+      .status(200)
+      .send({ success: true, message: 'Notification delted successfully' });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send({ success: false, msg: 'Unable to delte all notifications' });
+  }
+};
