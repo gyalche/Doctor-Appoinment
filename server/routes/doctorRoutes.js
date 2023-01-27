@@ -9,4 +9,7 @@ router.post('/getDoctorInfo', userAuthentication, getDoctorInfo);
 
 //update;
 router.post('/updateProfile', userAuthentication, updateProfile);
+
+//get single doc info;
+router.post('/getDoctorById', userAuthentication, getDoctorById);
 export default router;

@@ -12,6 +12,7 @@ import Users from './pages/admin/Users';
 import Doctors from './pages/admin/Doctors';
 import Doctor from './pages/Doctor';
 import Profile from './pages/doctor/Profile';
+import BookinPage from './pages/BookinPage';
 
 function App() {
   const { loading } = useSelector((state) => state.alert);
@@ -27,6 +28,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <HomePage />
+                </ProtectedRoute>
+              }
+            />
+             
+            <Route
+              path="/doctor/book-apoinment/:doctorId"
+              element={
+                <ProtectedRoute>
+                  <BookinPage />
                 </ProtectedRoute>
               }
             />

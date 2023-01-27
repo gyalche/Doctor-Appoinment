@@ -27,3 +27,17 @@ export const updateProfile = async (req, res) => {
     res.status(404).send({ success: false, message: 'something went wrong' });
   }
 };
+
+//get single doctor
+export const getDoctorById = async (req, res) => {
+  try {
+    const doctor = await doctorModel.findOne({ _id: req.body.doctorId });
+    res.status(200).send({
+      success: true,
+      message: 'Single doc Info Fetched',
+      data: doctor,
+    });
+  } catch (error) {
+    res.status(404).send({ success: false, message: 'something went wrong' });
+  }
+};

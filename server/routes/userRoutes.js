@@ -2,6 +2,7 @@ import express from 'express';
 import {
   applyDoctor,
   applyDoctorController,
+  bookAppoinment,
   deleteAllNotifications,
   getAllDoc,
   getUserData,
@@ -33,5 +34,8 @@ router.post(
 );
 //getAllDoc
 router.get('/getAllDoctor', userAuthentication, getAllDoc);
+
+//book appoinment;
+router.post('/book-appoinment', userAuthentication, bookAppoinment);
 
 export default router;
