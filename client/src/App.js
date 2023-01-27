@@ -12,6 +12,7 @@ import Users from './pages/admin/Users';
 import Doctors from './pages/admin/Doctors';
 import Doctor from './pages/Doctor';
 import Profile from './pages/doctor/Profile';
+
 function App() {
   const { loading } = useSelector((state) => state.alert);
   return (
