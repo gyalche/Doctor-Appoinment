@@ -1,61 +1,93 @@
-import { Layout, Table } from 'antd';
-import React, { useState, useEffect } from 'react';
+import { Layout, message } from 'antd';
+import React, { useEffect, useState } from 'react';
 import axios from '../../axios';
-
 const Doctors = () => {
-  const [users, setUsers] = useState([]);
-  //get users;
-  const getUsers = async () => {
+  const [doctor, setDoctors] = useState([]);
+  //get doctors;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const getDoctors = async () => {
     try {
-      const res = await axios.get('/admin/getAllUsers', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      const res = await axios.get('/admin/getAllDoctors', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
       if (res.data.success) {
-        setUsers(res.data.data);
+        setDoctors(res.data.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
-    getUsers();
-  }, [getUsers]);
+    getDoctors();
+  }, [getDoctors]);
 
-  //antD table Col
+  //handle account status
+  const handleAccountStatus = async (record, status) => {
+    try {
+      const res = await axios.post(
+        '/admin/changeAccountStatus',
+        {
+          doctorId: record._id,
+          userId: record.userId,
+          status: status,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (res.data.success) {
+        message.success(res.data.message);
+      }
+    } catch (error) {
+      message.error('Something went wrong');
+    }
+  };
+
   const columns = [
     {
       title: 'Name',
       dataIndex: 'name',
+      render: (text, record) => (
+        <span>
+          {record.firstName} {record.lastName}
+        </span>
+      ),
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
+      title: 'Status',
+      dataIndex: 'status',
     },
     {
-      title: 'Doctor',
-      dataIndex: 'doctor',
-      render: (text, record) => {
-        <span>{record.isDoctor ? 'Yes' : 'No'}</span>;
-      },
+      title: 'Phone',
+      dataIndex: 'phone',
     },
     {
-      title: 'CreatedAt',
-      dataIndex: 'createdAt',
-    },
-    {
-      title: 'Actions',
-      dataIndex: 'actions',
+      title: 'Action',
+      dataIndex: 'action',
       render: (text, record) => (
         <div className="d-flex">
-          <button className="btn btn-danger">Block</button>
+          {record.status === 'pending' ? (
+            <button
+              className="btn btn-success"
+              onClick={() => {
+                handleAccountStatus(record, 'approved');
+              }}>
+              Approve
+            </button>
+          ) : (
+            <button className="btn btn-danger">Reject</button>
+          )}
         </div>
       ),
     },
   ];
   return (
     <Layout>
-      <h1 className="text-center m-2">Users</h1>
-      <Table columns={columns} dataSource={users} />
+      <h1>Doctor lists</h1>
     </Layout>
   );
 };

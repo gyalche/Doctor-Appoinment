@@ -11,8 +11,32 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const { user } = useSelector((state) => state.user);
 
+  //doctor menu;
+  const doctorMenu = [
+    {
+      name: `Home`,
+      path: `/`,
+      icons: `fa-solid fa-house`,
+    },
+    {
+      name: `Appoinments`,
+      path: `/appoinments`,
+      icons: `fa-solid fa-list`,
+    },
+
+    {
+      name: `Profile`,
+      path: `/doctor/profile/${user?._id}`,
+      icons: `fa-solid fa-user`,
+    },
+  ];
+
   //rendering menu list;
-  const menu = user?.isAdmin ? adminMenu : SidebarMenu;
+  const menu = user?.isAdmin
+    ? adminMenu
+    : user?.isDoctor
+    ? doctorMenu
+    : SidebarMenu;
 
   return (
     <>
@@ -29,7 +53,7 @@ const Layout = ({ children }) => {
                 return (
                   <div className={`menu-item ${isActive ? 'active' : ''}`}>
                     <i className={menu.icons}></i>
-                    <Link to={`/${menu.path}`}>{menu.name}</Link>
+                    <Link to={menu.path}>{menu.name}</Link>
                   </div>
                 );
               })}
