@@ -1,5 +1,10 @@
 import express from 'express';
-import { getUserData, login, register } from '../controllers/userController.js';
+import {
+  applyDoctor,
+  getUserData,
+  login,
+  register,
+} from '../controllers/userController.js';
 import { userAuthentication } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
@@ -11,5 +16,8 @@ router.post('/register', register);
 
 //auth
 router.get('/getUserData', userAuthentication, getUserData);
+
+// apply doctor
+router.post('/applydoctor', userAuthentication, applyDoctor);
 
 export default router;

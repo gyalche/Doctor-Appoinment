@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children }) => {
       );
       dispatch(hideLoading);
       if (response.data.success) {
-        dispatch(setUser({ payload: response.data.data }));
+        dispatch(setUser(response.data.data));
       } else {
         <Navigate to="/login" />;
         localStorage.clear('token');

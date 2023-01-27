@@ -4,6 +4,7 @@ import { SidebarMenu, adminMenu } from './data/data';
 import Link from 'antd/es/typography/Link';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Avatar, Badge } from 'antd';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -27,7 +28,7 @@ const Layout = ({ children }) => {
                 return (
                   <div className={`menu-item ${isActive ? 'active' : ''}`}>
                     <i className={menu.icons}></i>
-                    <Link to={menu.path}>{menu.name}</Link>
+                    <Link to={`/${menu.path}`}>{menu.name}</Link>
                   </div>
                 );
               })}
@@ -36,8 +37,10 @@ const Layout = ({ children }) => {
           <div className="content">
             <div className="header">
               <div className="header-content">
+                <Badge count={user && user?.notification.length}>
+                  <i class="fa-solid fa-bell"></i>
+                </Badge>
                 <Link to="/profile">{user?.name}</Link>
-                <i class="fa-solid fa-bell"></i>
               </div>
             </div>
             <div className="body">{children}</div>

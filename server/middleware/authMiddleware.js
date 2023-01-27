@@ -3,19 +3,23 @@ import User from '../models/userModels.js';
 
 export const userAuthentication = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.splite(' ')[1];
-    if (token) {
-      const verifyToken = jwt.verify(token, 'dawadon');
-      if (verifyToken) {
-        // const user = await User.findById(verifyToken.id).select('-password');
-        // if (!user) {
-        //   res.status(403).send({ msg: 'You are not authencated' });
-        // }
-        req.body.userId = verifyToken.id;
+    const token = req.headers['authorization'].split(' ')[1];
+    jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
+      if (err) {
+        return res.status(200).send({
+          message: 'Auth Fialed',
+          success: false,
+        });
+      } else {
+        req.body.userId = decode.id;
         next();
       }
-    }
+    });
   } catch (error) {
-    res.status(500).send({ msg: error });
+    console.log(error);
+    res.status(401).send({
+      message: 'Auth Failed',
+      success: false,
+    });
   }
 };

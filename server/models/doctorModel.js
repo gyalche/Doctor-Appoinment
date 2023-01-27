@@ -38,6 +38,10 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      default: 'pending',
+    },
     feesPerConsultation: {
       type: Number,
       required: true,
@@ -50,5 +54,5 @@ const doctorSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const doctorModel = mongoose.model('users', doctorSchema);
+const doctorModel = mongoose.model('doctors', doctorSchema);
 export default doctorModel;

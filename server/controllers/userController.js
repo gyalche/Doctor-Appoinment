@@ -1,7 +1,7 @@
 import User from '../models/userModels.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-
+import doctorModel from '../models/doctorModel.js';
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -40,7 +40,6 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-
   //check if email exist or not;
   try {
     const user = await User.findOne({ email: email });
@@ -52,7 +51,7 @@ export const login = async (req, res) => {
     if (!comparePassword) {
       res.status(500).send({ msg: 'Password doesnt match', success: false });
     } else {
-      const token = jwt.sign({ userId: user._id }, 'dawadon', {
+      const token = jwt.sign({ id: user._id }, 'dawadon', {
         expiresIn: '1d',
       });
       res.status(201).send({ msg: 'Login Sucessfull', success: true, token });
@@ -65,7 +64,7 @@ export const login = async (req, res) => {
 //getUserData
 export const getUserData = async (req, res) => {
   try {
-    const user = await User.findById({ _id: req.user.userId });
+    const user = await User.findById({ _id: req.body.userId });
     user.password = undefined;
     if (!user) {
       return res.status(200).send({ msg: 'User not Found', success: false });
@@ -77,5 +76,31 @@ export const getUserData = async (req, res) => {
     }
   } catch (error) {
     res.status(500).send({ msg: 'unable to get user', success: false });
+  }
+};
+//apply doctor
+export const applyDoctor = async (req, res) => {
+  try {
+    const newDoctor = await doctorModel({ ...req.body, status: 'pending' });
+    await newDoctor.save();
+
+    const adminUser = await User.findOne({ isAdmin: true });
+    const notification = await adminUser.notification;
+    notification.push({
+      type: 'apply-doctor-request',
+      message: `${newDoctor.firstName} ${newDoctor.lastName} has apply for a doctor account`,
+      data: {
+        doctorId: newDoctor._id,
+        name: newDoctor.firstName + ' ' + newDoctor.lastName,
+        onClickPath: '/admin/doctors',
+      },
+    });
+
+    await User.findByIdAndUpdate(adminUser._id, { notification });
+    res
+      .status(201)
+      .send({ success: true, message: 'Doctor account applied successfully' });
+  } catch (error) {
+    res.status(400).send({ msg: 'unable to apply', success: false });
   }
 };
