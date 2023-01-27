@@ -3,6 +3,7 @@ import {
   applyDoctor,
   applyDoctorController,
   deleteAllNotifications,
+  getAllDoc,
   getUserData,
   login,
   register,
@@ -30,5 +31,7 @@ router.post(
   userAuthentication,
   deleteAllNotifications
 );
+//getAllDoc
+router.get('/getAllDoctor', userAuthentication, getAllDoc);
 
 export default router;

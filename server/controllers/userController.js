@@ -2,6 +2,7 @@ import User from '../models/userModels.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import doctorModel from '../models/doctorModel.js';
+import router from '../routes/doctorRoutes.js';
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -143,5 +144,17 @@ export const deleteAllNotifications = async (req, res) => {
     res
       .status(500)
       .send({ success: false, msg: 'Unable to delte all notifications' });
+  }
+};
+
+export const getAllDoc = async (req, res) => {
+  try {
+    const doctor = await doctorModel.find({ status: 'approved' });
+    res
+      .status(200)
+      .send({ success: true, message: 'Doct fetched', data: doctor });
+  } catch (error) {
+    console.log(error);
+    res.status(404).send({ success: false, message: 'Something went wrong' });
   }
 };
