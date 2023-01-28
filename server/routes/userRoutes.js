@@ -3,6 +3,7 @@ import {
   applyDoctor,
   applyDoctorController,
   bookAppoinment,
+  bookingAvailablity,
   deleteAllNotifications,
   getAllDoc,
   getUserData,
@@ -37,5 +38,8 @@ router.get('/getAllDoctor', userAuthentication, getAllDoc);
 
 //book appoinment;
 router.post('/book-appoinment', userAuthentication, bookAppoinment);
+
+//booking availablity;
+router.post('/booking-availablity', userAuthentication, bookingAvailablity); //
 
 export default router;

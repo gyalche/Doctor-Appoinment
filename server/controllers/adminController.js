@@ -1,5 +1,6 @@
 import doctorModel from '../models/doctorModel.js';
 import User from '../models/User.js';
+
 export const getAllUsers = async (req, res) => {
   try {
     const res = await User.find();

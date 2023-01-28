@@ -57,6 +57,28 @@ const BookinPage = () => {
     }
   };
 
+  const handleAvailability = async () => {
+    try {
+      const res = await axios.post(
+        '/user/book-appoinment',
+        {
+          doctorId: params.doctorId,
+          date,
+          time: timings,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+      );
+      if (res.data.success) {
+        setIsAvailable(true);
+        message.success(res.data.success);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getUserData();
   }, []);
@@ -91,10 +113,14 @@ const BookinPage = () => {
                   )
                 }
               />
-              <button className="btn btn-primary">Check Availability</button>
-              <button className="btn btn-dark" onClick={handleBooking}>
-                Book Now
+              <button className="btn btn-primary" onClick={handleAvailability}>
+                Check Availability
               </button>
+              {isAvailable && (
+                <button className="btn btn-dark" onClick={handleBooking}>
+                  Book Now
+                </button>
+              )}
             </div>
           </>
         )}

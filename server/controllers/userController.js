@@ -161,6 +161,8 @@ export const getAllDoc = async (req, res) => {
 
 export const bookAppoinment = async (req, res) => {
   try {
+    req.body.date = moment(req.body.date, 'DD-MM-YYYY').toISOString();
+    req.body.time = moment(req.body.time, 'HH:mm').toISOString();
     req.body.status = 'pending';
     const newAppoinment = new appoinmentModel(req.body);
     await newAppoinment.save();
@@ -171,6 +173,41 @@ export const bookAppoinment = async (req, res) => {
     });
     await user.save();
     res.status(200).send({ success: true, message: 'Booked successfylly' });
+  } catch (error) {
+    console.log(error);
+    res.status(404).send({ success: false, message: 'Something went wrong' });
+  }
+};
+
+//bookinga vailabeity cltr
+export const bookingAvailablity = async (req, res) => {
+  try {
+    const data = moment(req.body.date, 'DD-MM-YYYY').toISOString();
+    const fromTime = moment(req.body.time, 'HH:mm')
+      .subtract(1, 'hours')
+      .toISOString();
+    const toTime = moment(req.body.time, 'HH:mm').add(1, 'hours').toISOString();
+
+    const doctorId = req.body.doctorId;
+    const appoinments = await appoinmentModel.find({
+      doctorId,
+      date,
+      time: {
+        $gte: fromTime,
+        $lte: toTime,
+      },
+    });
+
+    if (appoinments.length > 0) {
+      return res.status(200).send({
+        message: 'Appoinments not Available at this time',
+        success: true,
+      });
+    } else {
+      return res
+        .status(200)
+        .send({ message: 'Appoinments available', success: true });
+    }
   } catch (error) {
     console.log(error);
     res.status(404).send({ success: false, message: 'Something went wrong' });

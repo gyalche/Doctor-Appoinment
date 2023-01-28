@@ -54,7 +54,7 @@ const Profile = () => {
         },
         {
           headers: {
-            Authorzation: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
